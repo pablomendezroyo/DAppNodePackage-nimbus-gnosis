@@ -12,7 +12,7 @@ services:
       HTTP_WEB3PROVIDER: "http://nethermind-xdai.dappnode:8545"
       GRAFFITI: validating_from_DAppNode
       WEB3_BACKUP: "https://rpc.gnosischain.com/"
-      CHECKPOINT_SYNC_URL: "https://rpc-gbc.gnosischain.com/"
+      CHECKPOINT_SYNC_URL: ""
       EXTRA_OPTS: ""
     ports:
       - 9000/tcp
