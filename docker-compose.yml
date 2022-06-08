@@ -11,7 +11,7 @@ services:
       LOG_TYPE: INFO
       HTTP_WEB3PROVIDER: "http://nethermind-xdai.dappnode:8545"
       GRAFFITI: validating_from_DAppNode
-      WEB3_BACKUP: "https://rpc.xdaichain.com/"
+      WEB3_BACKUP: "https://rpc.gnosischain.com/"
       CHECKPOINT_SYNC_URL: "https://rpc-gbc.gnosischain.com/"
       EXTRA_OPTS: ""
     ports:
