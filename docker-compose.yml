@@ -9,15 +9,17 @@ services:
     stop_grace_period: 1m
     environment:
       LOG_TYPE: INFO
-      HTTP_WEB3PROVIDER: "http://nethermind-xdai.dappnode:8545"
+      HTTP_ENGINE: "http://nethermind-xdai.dappnode:8551"
       GRAFFITI: validating_from_DAppNode
+      P2P_TCP_PORT: 19006
+      P2P_UDP_PORT: 19006
       WEB3_BACKUP: "https://rpc.gnosischain.com/"
       CHECKPOINT_SYNC_URL: ""
       EXTRA_OPTS: ""
       FEE_RECIPIENT_ADDRESS: ""
     ports:
-      - 9000/tcp
-      - 9000/udp
+      - "19006:19006/tcp"
+      - "19006:19006/udp"
     volumes:
       - "nimbus-gnosis-data:/home/user/nimbus-eth2/build/data"
     image: "beacon-validator.nimbus-gnosis.dnp.dappnode.eth:0.1.0"
