@@ -37,7 +37,6 @@
     "portNumber": 4500
   },
   "optionalDependencies": {
-    "web3signer-gnosis.dnp.dappnode.eth": "latest",
-    "nethermind-xdai.dnp.dappnode.eth": "latest"
+    "web3signer-gnosis.dnp.dappnode.eth": "1.0.9"
   }
 }
