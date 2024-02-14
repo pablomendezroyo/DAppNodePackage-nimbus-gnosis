@@ -22,7 +22,7 @@
     "url": "https://github.com/dappnode/DAppNodePackage-nimbus-gnosis/issues"
   },
   "requirements": {
-    "minimumDappnodeVersion": "0.2.51"
+    "minimumDappnodeVersion": "0.2.89"
   },
   "categories": ["Blockchain", "ETH2.0"],
   "links": {
@@ -36,7 +36,8 @@
     "serviceName": "beacon-validator",
     "portNumber": 4500
   },
-  "dependencies": {
-    "web3signer-gnosis.dnp.dappnode.eth": "latest"
+  "optionalDependencies": {
+    "web3signer-gnosis.dnp.dappnode.eth": "latest",
+    "nethermind-xdai.dnp.dappnode.eth": "latest"
   }
 }
