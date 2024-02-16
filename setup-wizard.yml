@@ -9,16 +9,6 @@ fields:
     maxLength: 32
     description: >-
       Add a string to your proposed blocks, which will be seen on the block explorer
-  - id: HTTP_WEB3PROVIDER
-    target:
-      type: environment
-      name: HTTP_WEB3PROVIDER
-      service: beacon-validator
-    title: Gnosis chain node URL
-    description: >-
-      Your Beacon chain node must have access to a syncronized xdai mainnet node. 
-      If you have not already, make sure to install and sync an xdai node of your choice ([install nethermind gnosis](http://my.dappnode/#/installer/nethermind-xdai.dnp.dappnode.eth)) and use its RPC url
-      Or use the official one: https://rpc.gnosischain.com/
   - id: checkpointSyncUrl
     target:
       type: environment
@@ -26,15 +16,18 @@ fields:
       service: beacon-validator
     title: Checkpoint for fast sync
     description: >-
-      To get Nimbus up and running in only a few minutes, you can start Nimbus from a recent finalized checkpoint state rather than syncing from genesis. This is substantially **faster** and consumes **less resources** than syncing from genesis, while still providing all the same features. Be sure you are using a trusted node for the fast sync.
-      Get your checkpoint sync from a running gnosis beacon chain node or use the official one **https://rpc-gbc.gnosischain.com/**
+      To get Nimbus up and running in only a few minutes, you can start Nimbus from a recent finalized checkpoint state rather than syncing from genesis. This is substantially **faster** and consumes **less resources** than syncing from genesis, while still providing all the same features. Be sure you are using a trusted node for the fast sync. Check the [Nimbus docs](https://nimbus.guide/trusted-node-sync.html) for more information.
+      Use the dappnode official endpoint `https://checkpoint-sync-gnosis.dappnode.io` or the official one from Gnosis `https://checkpoint.gnosischain.com`.
+      *Note - If you are going to provide your own checkpoint sync endpoint, make sure you do not use a slash `/` at the end of the URL.*
     required: false
-  - id: web3Backup
+  - id: feeRecipientAddress
     target:
       type: environment
-      name: WEB3_BACKUP
+      name: FEE_RECIPIENT_ADDRESS
       service: beacon-validator
-    title: Add a backup web3 provider
+    title: Fee Recipient Address
     description: >-
-      It's a good idea to add a backup web3 provider in case your main one goes down. You can use the official one: **https://rpc.gnosischain.com/**
-    required: false
+      Fee Recipient is a feature that lets you specify a priority fee recipient address on your validator client instance and beacon node. Make sure this is an address you control. After The Merge, Execution Clients will begin depositing priority fees into this address whenever your validator proposes a new block.
+    required: true
+    pattern: "^0x[a-fA-F0-9]{40}$"
+    patternErrorMessage: Must be a valid address (0x1fd16a...)
