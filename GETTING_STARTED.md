@@ -1,3 +1,4 @@
-## Welcome to your eth2 client Nimbus-gnosis:
+## Welcome to the Gnosis Chain Consensus Client: Nimbus
 
-- Upload your keystores in the [web3signer-ui](http://ui.web3signer-gnosis.dappnode?signer_url=http://web3signer.web3signer-gnosis.dappnode:9000) (do not have web3singer yet? install it [here](http://my.dappnode/#/installer/web3signer-gnosis.dnp.dappnode.eth))
+- Your keystores should now be managed in the Web3Signer's [New Staking Brain](http://brain.web3signer-gnosis.dappnode/)
+- All Staking Management has a new home in the Comprehensive [StakersUI](http://my.dappnode/stakers/gnosis)
