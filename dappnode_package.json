@@ -40,6 +40,9 @@
   "warnings": {
     "onRemove": "Make sure your StakersUI does not have this client selected! Double check in the Stakers Tab in the left NavBar"
   },
+  "optionalDependencies": {
+    "web3signer-gnosis.dnp.dappnode.eth": "1.0.10"
+  },
   "globalEnvs": [
     {
       "envs": ["EXECUTION_CLIENT_GNOSIS"],
