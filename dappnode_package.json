@@ -23,7 +23,7 @@
     "url": "https://github.com/dappnode/DAppNodePackage-nimbus-gnosis/issues"
   },
   "requirements": {
-    "minimumDappnodeVersion": "0.2.60"
+    "minimumDappnodeVersion": "0.2.89"
   },
   "categories": ["Blockchain"],
   "links": {
