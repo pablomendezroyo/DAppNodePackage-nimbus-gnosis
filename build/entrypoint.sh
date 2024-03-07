@@ -1,9 +1,7 @@
 #!/bin/bash
 
-CLIENT="nimbus"
 NETWORK="gnosis"
 VALIDATOR_PORT=3500
-WEB3SIGNER_API="http://web3signer.web3signer-${NETWORK}.dappnode:9000"
 
 DATA_DIR="/home/user/nimbus-eth2/build/data"
 VALIDATORS_DIR="${DATA_DIR}/validators"
@@ -12,50 +10,41 @@ TOKEN_FILE="${DATA_DIR}/auth-token"
 # Create validators dir
 mkdir -p ${VALIDATORS_DIR}
 
-WEB3SIGNER_RESPONSE=$(curl -s -w "%{http_code}" -X GET -H "Content-Type: application/json" -H "Host: beacon-validator.${CLIENT}-${NETWORK}.dappnode" "${WEB3SIGNER_API}/eth/v1/keystores")
-HTTP_CODE=${WEB3SIGNER_RESPONSE: -3}
-CONTENT=$(echo "${WEB3SIGNER_RESPONSE}" | head -c-4)
-if [ "${HTTP_CODE}" == "403" ] && [ "${CONTENT}" == "*Host not authorized*" ]; then
-    echo "${CLIENT} is not authorized to access the Web3Signer API. Start without pubkeys"
-elif [ "$HTTP_CODE" != "200" ]; then
-    echo "Failed to get keystores from web3signer, HTTP code: ${HTTP_CODE}, content: ${CONTENT}"
-else
-    PUBLIC_KEYS_WEB3SIGNER=($(echo "${CONTENT}" | jq -r 'try .data[].validating_pubkey'))
-    if [ ${#PUBLIC_KEYS_WEB3SIGNER[@]} -gt 0 ]; then
-        echo "found validators in web3signer, starting vc with pubkeys: ${PUBLIC_KEYS_WEB3SIGNER[*]}"
-        for PUBLIC_KEY in "${PUBLIC_KEYS_WEB3SIGNER[@]}"; do
-            # Docs: https://github.com/status-im/nimbus-eth2/pull/3077#issue-1049195359
-            # create a keystore file with the following format
-            # {
-            # "version": "1",
-            # "description": "This is simple remote keystore file",
-            # "type": "web3signer",
-            # "pubkey": "0x8107ff6a5cfd1993f0dc19a6a9ec7dc742a528dd6f2e3e10189a4a6fc489ae6c7ba9070ea4e2e328f0d20b91cc129733",
-            # "remote": "http://127.0.0.1:15052",
-            # "ignore_ssl_verification": true
-            # }
-
-            echo "creating keystore for pubkey: ${PUBLIC_KEY}"
-            mkdir -p "${VALIDATORS_DIR}"/"${PUBLIC_KEY}"
-            echo "{\"version\": 1,\"description\":\"This is simple remote keystore file\",\"type\":\"web3signer\",\"pubkey\":\"${PUBLIC_KEY}\",\"remote\":\"${WEB3SIGNER_API}\",\"ignore_ssl_verification\":true}" >/home/user/nimbus-eth2/build/data/validators/${PUBLIC_KEY}/remote_keystore.json
-        done
-    fi
-fi
+case $_DAPPNODE_GLOBAL_EXECUTION_CLIENT_GNOSIS in
+"nethermind-xdai.dnp.dappnode.eth")
+    HTTP_ENGINE="http://nethermind-xdai.dappnode:8551"
+    ;;
+"gnosis-erigon.dnp.dappnode.eth")
+    HTTP_ENGINE="http://gnosis-erigon.dappnode:8551"
+    ;;
+*)
+    echo "Unknown value for _DAPPNODE_GLOBAL_EXECUTION_CLIENT_GNOSIS: $_DAPPNODE_GLOBAL_EXECUTION_CLIENT_GNOSIS"
+    # TODO: this default value must be temporary and changed once there is more than 1 EC
+    HTTP_ENGINE="http://nethermind-xdai.dappnode:8551"
+    ;;
+esac
 
 # Run checkpoint sync script if provided
 [[ -n $CHECKPOINT_SYNC_URL ]] &&
-    /home/user/nimbus-eth2/build/nimbus_beacon_node trustedNodeSync \
+    /home/user/nimbus_beacon_node trustedNodeSync \
         --network=${NETWORK} \
         --trusted-node-url=${CHECKPOINT_SYNC_URL} \
         --backfill=false \
         --data-dir=//home/user/nimbus-eth2/build/data
-[[ -n $WEB3_BACKUP_URL ]] && EXTRA_OPTS="--web3-url=${WEB3_BACKUP_URL} ${EXTRA_OPTS}"
 
-exec -c /home/user/nimbus-eth2/build/nimbus_beacon_node \
+#Apply graffiti limit to non-unicode characters
+oLang=$LANG oLcAll=$LC_ALL
+LANG=C LC_ALL=C
+graffitiString=${GRAFFITI:0:32}
+LANG=$oLang LC_ALL=$oLcAll
+
+exec -c /home/user/nimbus_beacon_node \
     --network=${NETWORK} \
     --data-dir=${DATA_DIR} \
+    --tcp-port=$P2P_TCP_PORT \
+    --udp-port=$P2P_UDP_PORT \
     --validators-dir=${VALIDATORS_DIR} \
-    --log-level=info \
+    --log-level=${LOG_TYPE} \
     --rest \
     --rest-port=4500 \
     --rest-address=0.0.0.0 \
@@ -66,5 +55,8 @@ exec -c /home/user/nimbus-eth2/build/nimbus_beacon_node \
     --keymanager-port=${VALIDATOR_PORT} \
     --keymanager-address=0.0.0.0 \
     --keymanager-token-file=${TOKEN_FILE} \
-    --graffiti=\"$GRAFFITI\" \
+    --graffiti="${graffitiString}" \
+    --jwt-secret=/jwtsecret \
+    --web3-url=$HTTP_ENGINE \
+    --suggested-fee-recipient="${FEE_RECIPIENT_ADDRESS}" \
     $EXTRA_OPTS

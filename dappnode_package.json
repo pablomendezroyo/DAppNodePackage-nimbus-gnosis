@@ -1,17 +1,18 @@
 {
   "name": "nimbus-gnosis.dnp.dappnode.eth",
   "version": "0.1.0",
-  "upstreamVersion": "v22.6.0",
+  "upstreamVersion": "v24.2.2",
   "upstreamRepo": "status-im/nimbus-eth2",
   "upstreamArg": "UPSTREAM_VERSION",
   "architectures": ["linux/amd64"],
-  "shortDescription": "Nimbus gnosis ETH2.0 Beacon chain + validator",
-  "description": "nimbus-gnosis.public.dappnode.eth description",
+  "shortDescription": "Nimbus ETH2.0 Beacon chain + validator",
+  "description": "Nimbus is a client implementation that strives to be as lightweight as possible in terms of resources used. This allows it to perform well on embedded systems, resource-restricted devices -- including Raspberry Pis and mobile devices -- and multi-purpose servers.",
   "type": "service",
   "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
   "contributors": [
     "pablo <pablo@dappnode.io> (https://github.com/pablomendezroyo)",
-    "marce <mgarciate@dappnode.io> (https://github.com/mgarciate)"
+    "marce <mgarciate@dappnode.io> (https://github.com/mgarciate)",
+    "filoozom <philippe.schommers@gnosis.pm> (https://github.com/filoozom)"
   ],
   "license": "GPL-3.0",
   "repository": {
@@ -24,19 +25,28 @@
   "requirements": {
     "minimumDappnodeVersion": "0.2.89"
   },
-  "categories": ["Blockchain", "ETH2.0"],
+  "categories": ["Blockchain"],
   "links": {
-    "ui": "http://ui.web3signer-gnosis.dappnode?signer_url=http://web3signer.web3signer-gnosis.dappnode:9000",
+    "ui": "http://brain.web3signer-gnosis.dappnode",
     "homepage": "https://nimbus.team/",
     "readme": "https://github.com/dappnode/DAppNodePackage-nimbus-gnosis",
-    "docs": "https://www.nimbusproject.org/docs"
+    "docs": "https://nimbus.guide"
   },
   "chain": {
     "driver": "ethereum-beacon-chain",
     "serviceName": "beacon-validator",
     "portNumber": 4500
   },
+  "warnings": {
+    "onRemove": "Make sure your StakersUI does not have this client selected! Double check in the Stakers Tab in the left NavBar"
+  },
   "optionalDependencies": {
-    "web3signer-gnosis.dnp.dappnode.eth": "1.0.9"
-  }
+    "web3signer-gnosis.dnp.dappnode.eth": "1.0.10"
+  },
+  "globalEnvs": [
+    {
+      "envs": ["EXECUTION_CLIENT_GNOSIS"],
+      "services": ["beacon-validator"]
+    }
+  ]
 }
